@@ -66,14 +66,20 @@ st.html(
         margin-bottom: 25px;
     }
 
+    .hero,
+    .hero * {
+        color: #0f172a !important;
+    }
+
     .hero h1 {
         font-size: 42px;
         margin-bottom: 10px;
+        color: #0f172a !important;
     }
 
     .hero p {
         font-size: 18px;
-        color: #475569;
+        color: #475569 !important;
         line-height: 1.6;
     }
 
@@ -82,21 +88,41 @@ st.html(
         border-radius: 20px;
         margin: 20px 0;
         border: 1px solid #e2e8f0;
+        color: #0f172a !important;
+    }
+
+    .result-card * {
+        color: inherit;
     }
 
     .normal-card {
         background: #f0fdf4;
         border-color: #86efac;
+        color: #14532d !important;
+    }
+
+    .normal-card .result-title {
+        color: #166534 !important;
     }
 
     .abnormal-card {
         background: #fef2f2;
         border-color: #fca5a5;
+        color: #3f1d1d !important;
+    }
+
+    .abnormal-card .result-title {
+        color: #991b1b !important;
     }
 
     .review-card {
         background: #fffbeb;
         border-color: #fcd34d;
+        color: #3f2d0b !important;
+    }
+
+    .review-card .result-title {
+        color: #92400e !important;
     }
 
     .result-title {
@@ -108,32 +134,42 @@ st.html(
     .result-description {
         font-size: 16px;
         line-height: 1.7;
-        color: #334155;
+        color: #334155 !important;
+    }
+
+    .result-description strong {
+        color: #0f172a !important;
     }
 
     .metric-card {
         padding: 20px;
         border-radius: 16px;
-        background: white;
+        background: #ffffff;
         border: 1px solid #e2e8f0;
         margin-bottom: 12px;
+        color: #0f172a !important;
+    }
+
+    .metric-card * {
+        color: #0f172a !important;
     }
 
     .metric-name {
         font-size: 16px;
         font-weight: 700;
-        color: #0f172a;
+        color: #0f172a !important;
     }
 
     .metric-value {
         font-size: 25px;
         font-weight: 800;
         margin: 6px 0;
+        color: #0f172a !important;
     }
 
     .metric-range {
         font-size: 14px;
-        color: #64748b;
+        color: #475569 !important;
     }
 
     .section-title {
@@ -149,10 +185,21 @@ st.html(
         background: #fff7ed;
         border: 1px solid #fdba74;
         margin-top: 20px;
+        color: #7c2d12 !important;
+    }
+
+    .doctor-box,
+    .doctor-box p,
+    .doctor-box h1,
+    .doctor-box h2,
+    .doctor-box h3,
+    .doctor-box span,
+    .doctor-box div {
+        color: #7c2d12 !important;
     }
 
     .doctor-box strong {
-        color: #9a3412;
+        color: #9a3412 !important;
     }
 
     .disclaimer {
@@ -161,8 +208,29 @@ st.html(
         background: #f1f5f9;
         border: 1px solid #cbd5e1;
         margin-top: 35px;
-        color: #475569;
+        color: #334155 !important;
         line-height: 1.7;
+    }
+
+    .disclaimer,
+    .disclaimer p,
+    .disclaimer span,
+    .disclaimer div {
+        color: #334155 !important;
+    }
+
+    .disclaimer strong {
+        color: #0f172a !important;
+    }
+
+    /* Keep text readable inside custom light-background HTML blocks,
+       even when Streamlit / the browser is using dark mode. */
+    .hero,
+    .result-card,
+    .metric-card,
+    .doctor-box,
+    .disclaimer {
+        -webkit-text-fill-color: currentColor;
     }
 
     </style>

@@ -28,12 +28,23 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Only these confidently extracted measurements contribute to the overall
+# screening banner. Raw QT is heart-rate dependent, while P/T axes are
+# displayed for information rather than used alone to label the report.
+OVERALL_SCREEN_FIELDS = {
+    "Heart Rate",
+    "PR Interval",
+    "QRS Duration",
+    "QTc",
+    "QRS Axis",
+}
+
 
 # ============================================================
 # CUSTOM CSS
 # ============================================================
 
-st.markdown(
+st.html(
     """
     <style>
 
@@ -155,8 +166,7 @@ st.markdown(
     }
 
     </style>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 
@@ -955,7 +965,7 @@ def determine_report_status(
 # HERO
 # ============================================================
 
-st.markdown(
+st.html(
     """
     <div class="hero">
 
@@ -967,9 +977,7 @@ st.markdown(
         </p>
 
     </div>
-    """,
-    unsafe_allow_html=True
-)
+    """)
 
 
 # ============================================================
@@ -1074,10 +1082,8 @@ if uploaded:
     # REPORT PREVIEW
     # ========================================================
 
-    st.markdown(
-        '<div class="section-title">1. Your ECG Report</div>',
-        unsafe_allow_html=True
-    )
+    st.html(
+        '<div class="section-title">1. Your ECG Report</div>')
 
     cols = st.columns(
         min(3, len(images))
@@ -1113,6 +1119,16 @@ if uploaded:
                 "Please make sure pytesseract is installed."
             )
 
+            st.stop()
+
+        try:
+            pytesseract.get_tesseract_version()
+        except Exception:
+            st.error(
+                "Tesseract OCR is not available on the server. "
+                "For Streamlit Community Cloud, make sure your repository "
+                "contains a packages.txt file with: tesseract-ocr"
+            )
             st.stop()
 
 
@@ -1199,7 +1215,7 @@ if uploaded:
                     *ref[field][:2]
                 )
 
-                if status != "normal":
+                if status != "normal" and field in OVERALL_SCREEN_FIELDS:
 
                     abnormal_measurements.append(
                         field
@@ -1229,10 +1245,8 @@ if uploaded:
         # SIMPLE RESULT
         # ====================================================
 
-        st.markdown(
-            '<div class="section-title">2. Simple Result</div>',
-            unsafe_allow_html=True
-        )
+        st.html(
+            '<div class="section-title">2. Simple Result</div>')
 
 
         # ----------------------------------------------------
@@ -1241,7 +1255,7 @@ if uploaded:
 
         if report_status == "normal":
 
-            st.markdown(
+            st.html(
                 """
                 <div class="result-card normal-card">
 
@@ -1263,9 +1277,7 @@ if uploaded:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                """)
 
             st.info(
                 "This does not guarantee that the ECG is medically "
@@ -1280,7 +1292,7 @@ if uploaded:
 
         elif report_status == "abnormal":
 
-            st.markdown(
+            st.html(
                 """
                 <div class="result-card abnormal-card">
 
@@ -1305,9 +1317,7 @@ if uploaded:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                """)
 
 
             # Reported findings
@@ -1375,7 +1385,7 @@ if uploaded:
                         )
 
 
-            st.markdown(
+            st.html(
                 """
                 <div class="doctor-box">
 
@@ -1392,9 +1402,7 @@ if uploaded:
                     professional review.
 
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                """)
 
 
         # ----------------------------------------------------
@@ -1403,7 +1411,7 @@ if uploaded:
 
         elif report_status == "review":
 
-            st.markdown(
+            st.html(
                 """
                 <div class="result-card review-card">
 
@@ -1427,9 +1435,7 @@ if uploaded:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                """)
 
             st.info(
                 "Please review the original ECG with your doctor "
@@ -1443,7 +1449,7 @@ if uploaded:
 
         else:
 
-            st.markdown(
+            st.html(
                 """
                 <div class="result-card review-card">
 
@@ -1465,9 +1471,7 @@ if uploaded:
                     </div>
 
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                """)
 
             st.info(
                 "If you are concerned about the ECG, have the original "
@@ -1479,10 +1483,8 @@ if uploaded:
         # MEASUREMENT TABLE
         # ====================================================
 
-        st.markdown(
-            '<div class="section-title">3. Your ECG Numbers</div>',
-            unsafe_allow_html=True
-        )
+        st.html(
+            '<div class="section-title">3. Your ECG Numbers</div>')
 
         st.write(
             "Here is what the tool could read from your report "
@@ -1667,6 +1669,9 @@ if uploaded:
 
             for field in order:
 
+                if field not in OVERALL_SCREEN_FIELDS:
+                    continue
+
                 value, conf, alternatives = (
                     extracted.get(
                         field,
@@ -1737,10 +1742,8 @@ if uploaded:
         # MACHINE INTERPRETATION
         # ====================================================
 
-        st.markdown(
-            '<div class="section-title">4. What the ECG Machine Printed</div>',
-            unsafe_allow_html=True
-        )
+        st.html(
+            '<div class="section-title">4. What the ECG Machine Printed</div>')
 
 
         if interp:
@@ -1832,7 +1835,7 @@ if uploaded:
 
         if report_status == "abnormal":
 
-            st.markdown(
+            st.html(
                 """
                 <div class="doctor-box">
 
@@ -1853,19 +1856,15 @@ if uploaded:
                     </p>
 
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+                """)
 
 
         # ====================================================
         # WHAT TOOL CAN / CANNOT DO
         # ====================================================
 
-        st.markdown(
-            '<div class="section-title">5. What This Tool Can and Cannot Tell You</div>',
-            unsafe_allow_html=True
-        )
+        st.html(
+            '<div class="section-title">5. What This Tool Can and Cannot Tell You</div>')
 
 
         col1, col2 = st.columns(2)
@@ -1957,7 +1956,7 @@ if uploaded:
 # FOOTER / DISCLAIMER
 # ============================================================
 
-st.markdown(
+st.html(
     """
     <div class="disclaimer">
 
@@ -1989,11 +1988,9 @@ st.markdown(
         history and professional clinical assessment.
 
     </div>
-    """,
-    unsafe_allow_html=True
-)
+    """)
 
 
 st.caption(
-    "ECG Report Reader v5 • Educational screening prototype • Not a medical device"
+    "ECG Report Reader v6 • Educational screening prototype • Not a medical device"
 )

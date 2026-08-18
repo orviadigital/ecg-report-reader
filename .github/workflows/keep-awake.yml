@@ -2,7 +2,7 @@ name: Keep ECG App Awake
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */2 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,8 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake Streamlit app
+      - name: Touch Streamlit app
         run: |
-          curl -L --fail --silent \
-          "https://ecg-report-reader-fdbohvtyyhroskc4zvdsqz.streamlit.app/" \
-          > /dev/null
+          curl \
+            --silent \
+            --show-error \
+            --max-time 30 \
+            --max-redirs 3 \
+            -A "Mozilla/5.0" \
+            "https://ecg-report-reader-fdbohvtyyhroskc4zvdsqz.streamlit.app/" \
+            -o /dev/null || true
